@@ -53,7 +53,7 @@ import {BrowserRouter, Link} from 'react-router-dom';
                         <h3>{props.dish.name}</h3>
                         <hr />
                     </div>
-                </div>S
+                </div>
                 <div className="row">
                     <div className="col-12 col-md-5 m-1">
                         <RenderDish dish = {props.dish}/>
