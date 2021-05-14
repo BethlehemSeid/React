@@ -1,7 +1,8 @@
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import RenderLeader from './RenderLeader';
+
+// import RenderLeader from './RenderLeader';
 
 function About(props) {
 
@@ -10,6 +11,23 @@ function About(props) {
             <RenderLeader leader = {leader} /> 
         );
     });
+
+    function RenderLeader({leader}){
+        return (
+            <div key = {leader.id} className = "col-12 mt-5">
+                <Media tag = "li">
+                    <Media left middle>
+                        <Media object src = {leader.image} alt= {leader.name} />
+                    </Media>
+                    <Media body className = "ml-5">
+                        <Media heading>{leader.name}</Media>
+                        <Media subtitle>{leader.designation}</Media>
+                        <p>{leader.description}</p>
+                    </Media>
+                </Media>
+            </div>
+        );
+    }
 
     return(
         <div className="container">
