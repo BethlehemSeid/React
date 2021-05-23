@@ -71,7 +71,7 @@ class Header extends Component {
                     </Nav>
                     <Nav className = "ml-auto" navbar>
                         <NavItem>
-                            <Button outlne onClick = {this.toggleModal}>
+                            <Button outline onClick = {this.toggleModal}>
                                 <span className= "fa fa-sign-in fa-lg"></span> Login
                             </Button>
                         </NavItem>
@@ -83,7 +83,7 @@ class Header extends Component {
             <Jumbotron>
             <div className = 'container'>
                 <div className="row row-header">
-                    <div className="col-12 co-sm-6">
+                    <div className="col-12 col-sm-6">
                         <h1>Ristorante Con Fusion</h1>
                         <p>We take inspiration from the World's best cuisines, and create a unique fusin experience. Our lipsmaking creations wll tickle your culinary senses!</p>
                     </div>
