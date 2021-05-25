@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, FormGroup, Button, Modal, ModalHeader, ModalBody, Col, Row, Label} from 'reactstrap';
 import {BrowserRouter, Link} from 'react-router-dom';
 import {LocalForm, Errors, Control} from 'react-redux-form';
-
+import {Loading} from './LoadingComponent';
+import {addComment} from '../redux/ActionCreators';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -28,8 +29,7 @@ class CommentModal extends Component{
     handleSubmit(values){
         
         this.toggleCommentModal();
-        console.log("Current state is: " + JSON.stringify(values));
-        alert("Current state is: " + JSON.stringify(values));
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
     render(){
@@ -53,16 +53,16 @@ class CommentModal extends Component{
                             </Col>
                         </Row>
                         <Row className = "form-group">
-                            <Label htmlFor = "username" md = {12}><strong>Your Name</strong></Label>
+                            <Label htmlFor = "author" md = {12}><strong>Your Name</strong></Label>
                             <Col md={12}>
-                                <Control.text model = ".username" id="username" name="username" placeholder = "User Name" className = "form-control" validators= {{required, minLength: minLength(3), maxLength: maxLength(15)}} />
-                                <Errors className = "text-danger" model=".username" show="touched" messages={{required: 'Required', minLength: 'Must be greater than 2 characters', maxLength: 'Must be 15 characters or less'}} />
+                                <Control.text model = ".author" id="author" name="author" placeholder = "User Name" className = "form-control" validators= {{required, minLength: minLength(3), maxLength: maxLength(15)}} />
+                                <Errors className = "text-danger" model=".author" show="touched" messages={{required: 'Required', minLength: 'Must be greater than 2 characters', maxLength: 'Must be 15 characters or less'}} />
                             </Col>
                         </Row>
                         <Row className = "form-group">
                             <Label htmlFor = "comment" md = {12}> <strong>Comment</strong></Label>
                             <Col md = {12}>
-                                <Control.textarea model=".message" id = "message" name = "message" rows="6" className="form-control"/>
+                                <Control.textarea model=".comment" id = "comment" name = "comment" rows="6" className="form-control"/>
                             </Col>
                         </Row>
                         <Row className = "form-group">
@@ -86,28 +86,49 @@ class CommentModal extends Component{
 
 
 function DishDetail (props){
-    return(
-        <div className="container">  
-            <div className="row">
-                <Breadcrumb>
-                    <BreadcrumbItem><Link to = '/menu'> menu </Link></BreadcrumbItem>
-                    <BreadcrumbItem active> {props.dish.name} </BreadcrumbItem>
-                </Breadcrumb>
-                <div className ="col-12">
-                    <h3>{props.dish.name}</h3>
-                    <hr />
+    if(props.isLoading){
+        return(
+            <div className = "container">
+                <div className = "row">
+                    <Loading />
                 </div>
             </div>
-            <div className="row">
-                <div className="col-12 col-md-5 m-1">
-                    <RenderDish dish = {props.dish}/>
-                </div>
-                <div className="col-12 col-md-5 m-1">
-                    <RenderComments comment={props.comments}/>
+        );
+    }
+    else if (props.errMess){
+        return(
+            <div className = "container">
+                <div className = "row">
+                    <h4>{props.errMess}</h4>
                 </div>
             </div>
-        </div> 
-    );
+        );      
+    }
+    else
+        return(
+            <div className="container">  
+                <div className="row">
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to = '/menu'> menu </Link></BreadcrumbItem>
+                        <BreadcrumbItem active> {props.dish.name} </BreadcrumbItem>
+                    </Breadcrumb>
+                    <div className ="col-12">
+                        <h3>{props.dish.name}</h3>
+                        <hr />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12 col-md-5 m-1">
+                        <RenderDish dish = {props.dish}/>
+                    </div>
+                    <div className="col-12 col-md-5 m-1">
+                        <RenderComments comment={props.comments} 
+                            addComment = {props.addComment}
+                            dishId={props.dish.id}/>
+                    </div>
+                </div>
+            </div> 
+        );
 }
 
 
@@ -128,7 +149,7 @@ function RenderDish({dish}) {
     }
 }
 
-function RenderComments({comment}){    
+function RenderComments({comment, addComment, dishId}){    
     if(comment != null){
         const com = comment.map((cmt) => {
             return(
@@ -142,7 +163,7 @@ function RenderComments({comment}){
             <>
                 <h1>Comments</h1>
                 <div list>{com}</div>
-                <CommentModal />
+                <CommentModal dishId = {dishId} addComment = {addComment} />
             </>
         );
     }
